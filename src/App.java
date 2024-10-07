@@ -1,14 +1,17 @@
 import processing.core.*;
 
 public class App extends PApplet {
-    float circle1X, circle1Y, circle2X, circle2Y;
-    float circle1Size = 20;
-    float circle2Size = 70; 
-    float jumpHeight = 150;
-    float circle1Velocity = 0;
+    float ballX, ballY, circleX, circleY;
+    float ballSize = 20;
+    float circleSize = 70;
     boolean isJumping = false;
+    float jumpHeight = -12;  
+    float velocity = 0;
     boolean collided = false;
-    float gravity = 3;
+    int points = 0;
+    boolean gameOver = false;
+    double gravity = 0.6;  
+    float ballSpeed = 2;
 
     public static void main(String[] args) {
         PApplet.main("App");
@@ -20,54 +23,90 @@ public class App extends PApplet {
     }
 
     public void setup() {
-        circle1X = 50;
-        circle1Y = height / 2;
-        circle2X = 800;
-        circle2Y = height / 2;
+        ballX = 50;
+        ballY = height / 2;
+        circleX = width / 2;
+        circleY = height / 2;
 
     }
 
     public void draw() {
         background(135, 206, 235);
-        fill(255, 0, 0);
+        if (!gameOver) {
+    
+            velocity += gravity;
+            ballY += velocity;
 
-        if (circle2X < 0) {
-            circle2X = width;
-        }
-        if (isJumping) {
-            circle1Y -= -5;
-            if (circle1Y <= height / 2 - jumpHeight) {
-                isJumping = false;
+            if (ballY > height) {
+                ballY = height;  
+                gameOver = true;
+            }
+
+            if (ballY < 0) {
+                gameOver = true;
+            }
+            
+
+            fill(255, 0, 0);
+            ellipse(ballX, ballY, ballSize, ballSize);
+
+            fill(0, 0, 255);
+            ellipse(circleX, circleY, circleSize, circleSize);
+ 
+            ballX += ballSpeed;
+
+             ballSpeed += 0.001;
+
+                if (collision()) {
+                    if (collision()) {
+                        points++;  
+                        ballX = 50;  
+                        ballY = height / 2;
+                        velocity = 0;
+                        collided = true;
+                        ballSpeed = 2;
+                    } else {
+                        collided = false;
+                    }  
+                }
+
+            if (ballY > height || (ballX > circleX + circleSize / 2 && !collided)) {
+                gameOver = true;
             }
 
         } else {
-            if (circle1Y < height / 2) {
-                circle1Y += gravity;
-            }
-        }
-
-        ellipse(circle1X, circle1Y, circle1Size, circle1Size);
-
-        if (collision()) {
-            circle2X = width / 2;
-            collided = true;
-        } else {
-            circle2X -= 2;
-            collided = false;
-        }
-        if (!collided) {
-            ellipse(circle2X, circle2Y, circle2Size, circle2Size);
-        }
+            fill(255, 0, 0);
+            textSize(64);
+            text("GAME OVER", width / 2 - 150, height / 2);
+            fill(0);
+            textSize(32);
+            text("Points: " + points, width / 2 - 100, height / 2 + 50);
+            text("Press 'R' to Restart", width / 2 - 100, height / 2 + 100);
     }
+}  
 
     public boolean collision() {
-        double distanceOfCircles = dist(circle1X, circle1Y, circle2X, circle2Y);
-        return distanceOfCircles <= (circle1Size / 2 + circle2Size / 2);
+        float distance = dist(ballX, ballY, circleX, circleY);
+        return distance <= (ballSize / 2 + circleSize / 2);
     }
 
     public void keyPressed() {
-        if (key == ' ' && !isJumping) {
+        if (key == ' ' && !gameOver ) {
+            velocity = jumpHeight;
             isJumping = true;
-        }
+    } else if (key == 'r' || key == 'R') {
+        resetGame();
     }
+    }
+public void resetGame() {
+    ballX = 50;
+    ballY = height / 2;
+    circleX = width / 2;
+    circleY = height / 2;
+    points = 0;
+    gameOver = false;
+    isJumping= false;
+    velocity = 0;
+    ballSpeed = 2;
+}
 }
