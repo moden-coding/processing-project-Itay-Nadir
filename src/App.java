@@ -1,20 +1,20 @@
 import processing.core.*;
 
 public class App extends PApplet {
-    float ballX, ballY, hoopX, hoopY; // coordinates of ball and hoop 
-    float ballSize = 20; //size of ball
-    float hoopSize = 70; // size of hoop
-    boolean isJumping = false; //condition for if the ball is jumping
+    float ballX, ballY, hoopX, hoopY; // ball and hoop positioning:
+    float ballSize = 20;
+    float hoopSize = 70;
+    boolean isJumping = false; // condition for if the ball is jumping
     float jumpHeight = -12; // initial upward velocity for the jump
     float velocity = 0; // vertical speed of the ball
     boolean collided = false; // condition for collision
-    int points = 0; //starting points value
+    int points = 0; // starting points value
     int startTime; // time when game starts
-    double delay = 1; //delay time
-    boolean gameOver = false; //condition for game over
-    boolean showIntro = true; //condition for showing intro
-    double gravity = 0.5; //gravity on ball
-    double ballSpeed = 1.3; //initial horizontal speed of the hoop
+    double delay = 1; // delay time
+    boolean gameOver = false; // condition for game over
+    boolean showIntro = true; // condition for showing intro
+    double gravity = 0.5; // gravity on ball
+    double ballSpeed = 1.3; // initial horizontal speed of the hoop
     // positioning for reset button:
     float resetButtonX = 300;
     float resetButtonY = 400;
@@ -26,7 +26,7 @@ public class App extends PApplet {
     }
 
     public void settings() {
-        size(800, 600); //size of my game screen
+        size(800, 600); // size of my game screen
 
     }
 
@@ -39,13 +39,13 @@ public class App extends PApplet {
     }
 
     public void draw() {
-        background(135, 206, 235); //sets background color to light blue
+        background(135, 206, 235); // sets background color to light blue
 
         if (showIntro) {
             // Intro screen content
             fill(0);
             textSize(64);
-            text("Flappy Hoop", width / 2 - 180, height / 2 - 50);
+            text("Flappy Hoop", width / 2 - 180, height / 2 - 150);
 
             textSize(32);
             text("Press any key to start", width / 2 - 150, height / 2 + 50);
@@ -55,6 +55,10 @@ public class App extends PApplet {
 
             textSize(32);
             text("Use R to reset", width / 2 - 150, height / 2 + 250);
+
+            textSize(22);
+            text("Hit the hoop to score points and avoid hitting the top or bottom to stay in the game", width / 2 - 380, height / 2 - 50);
+
         } else if (!gameOver) {
             int timeSinceStart = (millis() - startTime) / 1000; // converts time since start to seconds
 
@@ -70,7 +74,7 @@ public class App extends PApplet {
                 gameOver = true;
             }
 
-            if (ballY < 0) { 
+            if (ballY < 0) {
                 gameOver = true; // checks if the ball goes above the top of the screen, showing a game over
             }
             // draws the ball
@@ -79,7 +83,7 @@ public class App extends PApplet {
             // draws the hoop
             fill(0, 0, 255);
             ellipse(hoopX, hoopY, hoopSize, hoopSize);
-         
+
             hoopX -= ballSpeed;
             // moves the hoop left across the screen based on the current ball speed
             ballSpeed += 0.003;
@@ -100,21 +104,21 @@ public class App extends PApplet {
             }
 
             if (ballY > height || (ballX > hoopX + hoopSize / 2 && !collided)) {
-                gameOver = true;   // checking for if game should end
+                gameOver = true; // checking for if game should end
             }
 
         } else { // end screen content
             fill(255, 0, 0);
             textSize(64);
-            text("GAME OVER", width / 2 - 150, height / 2); 
+            text("GAME OVER", width / 2 - 150, height / 2);
             fill(0);
             textSize(32);
-            text("Points: " + points, width / 2 - 100, height / 2 + 50); 
+            text("Points: " + points, width / 2 - 100, height / 2 + 50);
             fill(0, 255, 0);
             rect(resetButtonX, resetButtonY, resetButtonWidth, resetButtonHeight); // draws the reset button
             fill(0);
             textSize(32);
-            text("RESET", resetButtonX + 50, resetButtonY + 35); 
+            text("RESET", resetButtonX + 50, resetButtonY + 35);
         }
     }
 
@@ -124,21 +128,22 @@ public class App extends PApplet {
         return distance <= (ballSize / 2 + hoopSize / 2);
     }
 
-    // method for reseting game (basiclluy just resetting up and redefining the variables)
+    // method for reseting game (basiclluy just resetting up and redefining the
+    // variables)
     public void resetGame() {
-        ballX = 200; 
-        ballY = height / 2; 
-        hoopX = width - 200; 
-        hoopY = height / 2; 
+        ballX = 200;
+        ballY = height / 2;
+        hoopX = width - 200;
+        hoopY = height / 2;
         points = 0;
-        gameOver = false; 
-        isJumping = false; 
-        velocity = 0; 
-        ballSpeed = 1.3; 
-        startTime = millis();  
+        gameOver = false;
+        isJumping = false;
+        velocity = 0;
+        ballSpeed = 1.3;
+        startTime = millis();
     }
 
-    public void keyPressed() { //method for key mechanisms
+    public void keyPressed() { // method for key mechanisms
         if (showIntro) {
             showIntro = false; // exit intro screen on any key press
         } else if (key == ' ' && !gameOver) { // use spacebar to click
@@ -149,10 +154,11 @@ public class App extends PApplet {
         }
     }
 
-        // Checks if it's game over and if the mouse click is within the reset button's area
+    // Checks if it's game over and if the mouse click is within the reset button's
+    // area
     public void mousePressed() {
-        if (gameOver && mouseX > resetButtonX && mouseX < resetButtonX + resetButtonWidth && 
-                mouseY > resetButtonY && mouseY < resetButtonY + resetButtonHeight) { 
+        if (gameOver && mouseX > resetButtonX && mouseX < resetButtonX + resetButtonWidth &&
+                mouseY > resetButtonY && mouseY < resetButtonY + resetButtonHeight) {
             resetGame(); // restarts the game
         }
     }
